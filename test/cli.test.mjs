@@ -189,7 +189,10 @@ test("watch mode reconverts after the input file changes", async () => {
 
     try {
       await writeFile(inputPath, "# After\n\nUpdated content\n", "utf8");
-      await waitFor(async () => (await readFile(outputPath, "utf8")).includes("Updated content"));
+      await waitFor(async () => {
+        const html = await readFile(outputPath, "utf8");
+        return html.includes("Updated content") && successes.length >= 1;
+      });
     } finally {
       handle.close();
       await handle.closed;
