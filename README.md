@@ -1,5 +1,7 @@
 # md2html-cli
 
+[![CI](https://github.com/cn-ywcw/md2html/actions/workflows/ci.yml/badge.svg)](https://github.com/cn-ywcw/md2html/actions/workflows/ci.yml)
+
 一个使用 TypeScript 编写的 Markdown 转 HTML 命令行工具。
 
 ## 功能
@@ -68,3 +70,46 @@ npm test
 ```
 
 输出 HTML 是完整的独立文档，默认样式直接内嵌在 `<style>` 标签中，不需要额外的 CSS 文件。
+
+## CI 与发布
+
+### CI 检查
+
+每次向 `main` 分支推送代码或提交 Pull Request 时，GitHub Actions 都会运行检查：
+
+1. 使用 Node.js 20 安装锁定的依赖
+2. 执行 `npm run build`，确认 TypeScript 可以编译
+3. 执行全部 Node.js 测试
+
+工作流文件位于 `.github/workflows/ci.yml`，检查任务名称为 `check`。
+
+### 发布
+
+发布通过推送符合 `vX.Y.Z` 格式的 Git tag 触发。发布工作流会先安装依赖、编译并运行测试，然后创建 GitHub Release，并上传包含编译后 `dist/` 目录的 npm 包：
+
+```text
+md2html-cli-X.Y.Z.tgz
+```
+
+发布 tag 必须与 `package.json` 中的版本一致。首次发布当前版本时，可以执行：
+
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+后续发布建议使用 `npm version` 同步更新 `package.json` 和 `package-lock.json`，并自动创建 tag：
+
+```bash
+npm version patch   # 或 npm version minor / npm version major
+git push origin main --follow-tags
+```
+
+发布说明会根据上一个 release/tag 之后的提交自动生成。使用 Conventional Commits 前缀可以将内容归类为新增功能和 Bug 修复：
+
+```text
+feat: add a new option
+fix: handle an invalid input path
+```
+
+发布工作流文件位于 `.github/workflows/release.yml`，说明生成脚本位于 `scripts/generate-release-notes.mjs`。
