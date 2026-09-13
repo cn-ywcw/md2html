@@ -1,0 +1,29 @@
+{
+  "name": "md2html-cli",
+  "version": "1.0.0",
+  "description": "Convert Markdown files to standalone HTML documents.",
+  "type": "module",
+  "bin": {
+    "md2html": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/cli.js",
+    "test": "npm run build && node --test test/cli.test.mjs",
+    "prepack": "npm run build"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "marked": "^18.0.13"
+  },
+  "devDependencies": {
+    "@types/node": "^26.5.1",
+    "typescript": "^7.0.2"
+  }
+}
